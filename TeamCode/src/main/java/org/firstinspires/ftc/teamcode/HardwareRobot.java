@@ -53,19 +53,26 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class HardwareRobot
 {
     /* Public OpMode members. */
+    //Motors that move the robot
     public DcMotor leftFront   = null;
     public DcMotor rightFront  = null;
     public DcMotor leftBack    = null;
     public DcMotor rightBack   = null;
+    //Motors that move the wheels grabbing stones
     public DcMotor rightWheel  = null;
     public DcMotor leftWheel   = null;
+    //Servos of the claw
     public Servo  leftClaw     = null;
     public Servo  rightClaw    = null;
-    public Servo topTwistyBoi    = null;
-    public Servo bottomTwistyBoi = null;
+    //servos that twist the claw
+    public Servo verticalServo    = null;
+    public Servo horizontalServo = null;
+    //Servos that move the wheels grabbing stones
+    public Servo rightWheelServo = null;
+    public Servo leftWheelServo = null;
 
     public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
+    //public static final double ARM_UP_POWER    =  0.45 ;
     //public static final double ARM_DOWN_POWER  = -0.45 ;
 
     /* local OpMode members. */
@@ -116,10 +123,14 @@ public class HardwareRobot
         // Define and initialize ALL installed servos.
         leftClaw  = hwMap.get(Servo.class, "left_hand");
         rightClaw = hwMap.get(Servo.class, "right_hand");
-        topTwistyBoi = hwMap.get(Servo.class, "top_twisty_boi");
-        bottomTwistyBoi = hwMap.get(Servo.class, "bottom_twisty_boi");
+        verticalServo = hwMap.get(Servo.class, "vertical_servo");
+        horizontalServo = hwMap.get(Servo.class, "horizontal_servo");
         leftClaw.setPosition(MID_SERVO);
         rightClaw.setPosition(MID_SERVO);
+        verticalServo.setPosition(MID_SERVO);
+        horizontalServo.setPosition(MID_SERVO);
+        leftWheelServo.setPosition(MID_SERVO);
+        rightWheelServo.setPosition(MID_SERVO);
     }
  }
 

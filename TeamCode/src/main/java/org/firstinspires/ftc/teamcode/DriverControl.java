@@ -80,4 +80,45 @@ public class DriverControl extends OpMode {
   public void loop() {
     telemetry.addData("Status", "Run Time: " + runtime.toString());
   }
+  boolean RB1isPressed  = gamepad1.right_bumper;
+  boolean LB1isPressed  = gamepad1.left_bumper;
+  boolean B1isPressed   = gamepad1.b;
+  boolean A1isPressed   = gamepad1.a;
+  boolean Y1isPressed   = gamepad1.y;
+  boolean X1isPressed   = gamepad1.x;
+  boolean dPadUp1       = gamepad1.dpad_up;
+  boolean dPadDown1     = gamepad1.dpad_down;
+  boolean dPadLeft1     = gamepad1.dpad_left;
+  boolean dPadRight1    = gamepad1.dpad_right;
+  boolean R3isPressed1  = gamepad1.right_stick_button;
+  boolean L3isPressed1  = gamepad1.left_stick_button;
+
+  double RT1            = gamepad1.right_trigger;
+  double LT1            = gamepad1.left_trigger;
+  double leftStickY1    = gamepad1.left_stick_y;
+  double leftStickX1    = gamepad1.left_stick_x;
+  double rightStickY1   = gamepad1.right_stick_y;
+  double rightStickX1   = gamepad1.right_stick_x;
+
+  //gamepad2
+  boolean RB2isPressed = gamepad2.right_bumper;
+  boolean LB2isPressed  = gamepad2.left_bumper;
+  boolean B2isPressed   = gamepad2.b;
+  boolean A2isPressed   = gamepad2.a;
+  boolean Y2isPressed   = gamepad2.y;
+  boolean X2isPressed   = gamepad2.x;
+  boolean dPadUp2       = gamepad2.dpad_up;
+  boolean dPadDown2     = gamepad2.dpad_down;
+  boolean dPadLeft2     = gamepad2.dpad_left;
+  boolean dPadRight2    = gamepad2.dpad_right;
+  boolean R3isPressed2  = gamepad2.right_stick_button;
+  boolean L3isPressed2  = gamepad2.left_stick_button;
+
+  double RT2            = gamepad2.right_trigger;
+  double LT2            = gamepad2.left_trigger;
+  double leftStickY2    = gamepad2.left_stick_y;
+  double leftStickX2    = gamepad2.left_stick_x;
+  double rightStickY2   = gamepad2.right_stick_y;
+  double rightStickX2   = gamepad2.right_stick_x;
+
 }

@@ -34,7 +34,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.HardwareRobot;
 
 /**
@@ -47,39 +48,6 @@ public class DriverControl extends OpMode {
 
   private ElapsedTime runtime = new ElapsedTime();
 
-  @Override
-  public void init() {
-    telemetry.addData("Status", "Initialized");
-
-    robot.init(hardwareMap);
-  }
-  /*
-     * Code to run when the op mode is first enabled goes here
-     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#start()
-     */
-
-
-  @Override
-  public void init_loop() {
-  }
-
-  /*
-   * This method will be called ONCE when start is pressed
-   * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
-   */
-  @Override
-  public void start() {
-    runtime.reset();
-  }
-
-  /*
-   * This method will be called repeatedly in a loop
-   * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
-   */
-  @Override
-  public void loop() {
-    telemetry.addData("Status", "Run Time: " + runtime.toString());
-  }
   boolean RB1isPressed  = gamepad1.right_bumper;
   boolean LB1isPressed  = gamepad1.left_bumper;
   boolean B1isPressed   = gamepad1.b;
@@ -120,5 +88,49 @@ public class DriverControl extends OpMode {
   double leftStickX2    = gamepad2.left_stick_x;
   double rightStickY2   = gamepad2.right_stick_y;
   double rightStickX2   = gamepad2.right_stick_x;
+
+
+  @Override
+  public void init() {
+    telemetry.addData("Status", "Initialized");
+
+    robot.init(hardwareMap);
+  }
+  /*
+     * Code to run when the op mode is first enabled goes here
+     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#start()
+     */
+
+
+  @Override
+  public void init_loop() {
+  }
+
+  /*
+   * This method will be called ONCE when start is pressed
+   * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
+   */
+  @Override
+  public void start() {
+    runtime.reset();
+  }
+
+  /*
+   * This method will be called repeatedly in a loop
+   * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
+   */
+  @Override
+  public void loop() {
+    telemetry.addData("Status", "Run Time: " + runtime.toString());
+  }
+
+
+  static final double MAX_POS_S1 = 1.0;
+  static final double MIN_POS_S1 = 0.0;
+  static final double MAX_POS_S2 = 1.0;
+  static final double MIN_POS_S2 = 0.0;
+
+
+  //gamepad2
 
 }

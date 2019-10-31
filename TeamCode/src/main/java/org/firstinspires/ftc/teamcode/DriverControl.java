@@ -85,6 +85,7 @@ public class DriverControl extends OpMode {
   double RT2            = gamepad2.right_trigger;
   double LT2            = gamepad2.left_trigger;
   double leftStickY2    = gamepad2.left_stick_y;
+  double leftStickNY2   = -gamepad2.left_stick_y;
   double leftStickX2    = gamepad2.left_stick_x;
   double rightStickY2   = gamepad2.right_stick_y;
   double rightStickX2   = gamepad2.right_stick_x;
@@ -124,12 +125,12 @@ public class DriverControl extends OpMode {
     telemetry.addData("Status", "Run Time: " + runtime.toString());
   }
 
+  robot.leftFront.setPower(leftStickY1);
 
   static final double MAX_POS_S1 = 1.0;
   static final double MIN_POS_S1 = 0.0;
   static final double MAX_POS_S2 = 1.0;
   static final double MIN_POS_S2 = 0.0;
-
 
 
 }

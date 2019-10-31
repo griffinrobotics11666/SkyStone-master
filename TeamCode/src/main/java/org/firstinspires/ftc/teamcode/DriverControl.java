@@ -65,8 +65,9 @@ public class DriverControl extends OpMode {
   double LT1            = gamepad1.left_trigger;
   double leftStickY1    = gamepad1.left_stick_y;
   double leftStickX1    = gamepad1.left_stick_x;
-  double rightStickY1   = gamepad1.right_stick_y;
   double rightStickX1   = gamepad1.right_stick_x;
+  double leftPower;
+  double rightPower;
 
   //gamepad2
   boolean RB2isPressed = gamepad2.right_bumper;
@@ -85,7 +86,6 @@ public class DriverControl extends OpMode {
   double RT2            = gamepad2.right_trigger;
   double LT2            = gamepad2.left_trigger;
   double leftStickY2    = gamepad2.left_stick_y;
-  double leftStickNY2   = -gamepad2.left_stick_y;
   double leftStickX2    = gamepad2.left_stick_x;
   double rightStickY2   = gamepad2.right_stick_y;
   double rightStickX2   = gamepad2.right_stick_x;
@@ -123,14 +123,21 @@ public class DriverControl extends OpMode {
   @Override
   public void loop() {
     telemetry.addData("Status", "Run Time: " + runtime.toString());
+
+    leftPower    = Range.clip(-leftStickY1 + leftStickX1, -1.0, 1.0) ;
+    rightPower   = Range.clip(-leftStickY1 - leftStickX1, -1.0, 1.0) ;
+
+    robot.leftFront.setPower(leftPower);
+    robot.rightFront.setPower(rightPower);
+    robot.leftBack.setPower(leftPower);
+    robot.rightBack.setPower(rightPower);
+
+    robot.leftFront.setPower(rightStickX1);
+    robot.rightFront.setPower(rightStickX1);
+    robot.leftBack.setPower(-rightStickX1);
+    robot.rightBack.setPower(-rightStickX1);
+
+
   }
-
-  robot.leftFront.setPower(leftStickY1);
-
-  static final double MAX_POS_S1 = 1.0;
-  static final double MIN_POS_S1 = 0.0;
-  static final double MAX_POS_S2 = 1.0;
-  static final double MIN_POS_S2 = 0.0;
-
 
 }

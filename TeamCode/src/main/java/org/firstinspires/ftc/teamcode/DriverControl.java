@@ -131,6 +131,5 @@ public class DriverControl extends OpMode {
   static final double MIN_POS_S2 = 0.0;
 
 
-  //gamepad2
 
 }

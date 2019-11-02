@@ -144,8 +144,8 @@ public class DriverControl extends OpMode {
     robot.rightBack.setPower(-rightStickX1);
 
     if(A1isPressed) {
-      robot.rightWheelServo.setPosition(1);
-      robot.leftWheelServo.setPosition(1);
+      //robot.rightWheelServo.setPosition(1);
+      //robot.leftWheelServo.setPosition(1);
     }
 
   }

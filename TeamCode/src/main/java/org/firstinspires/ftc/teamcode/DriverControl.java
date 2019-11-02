@@ -48,6 +48,12 @@ public class DriverControl extends OpMode {
 
   private ElapsedTime runtime = new ElapsedTime();
 
+  double openServoL;
+  double openServoR;
+  double closedServoL;
+  double closedServoR;
+
+  //gamepad1
   boolean RB1isPressed  = gamepad1.right_bumper;
   boolean LB1isPressed  = gamepad1.left_bumper;
   boolean B1isPressed   = gamepad1.b;
@@ -124,8 +130,8 @@ public class DriverControl extends OpMode {
   public void loop() {
     telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-    leftPower    = Range.clip(-leftStickY1 + leftStickX1, -1.0, 1.0) ;
-    rightPower   = Range.clip(-leftStickY1 - leftStickX1, -1.0, 1.0) ;
+    leftPower = Range.clip(-leftStickY1 + leftStickX1, -1.0, 1.0);
+    rightPower = Range.clip(-leftStickY1 - leftStickX1, -1.0, 1.0);
 
     robot.leftFront.setPower(leftPower);
     robot.rightFront.setPower(rightPower);
@@ -137,7 +143,12 @@ public class DriverControl extends OpMode {
     robot.leftBack.setPower(-rightStickX1);
     robot.rightBack.setPower(-rightStickX1);
 
+    if(A1isPressed) {
+      robot.rightWheelServo.setPosition(1);
+      robot.leftWheelServo.setPosition(1);
+    }
 
   }
+
 
 }

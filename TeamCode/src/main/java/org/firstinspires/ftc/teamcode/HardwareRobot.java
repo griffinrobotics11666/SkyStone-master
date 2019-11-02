@@ -59,19 +59,19 @@ public class HardwareRobot
     public DcMotor leftBack    = null;
     public DcMotor rightBack   = null;
     //Motors that move the wheels grabbing stones
-    public DcMotor rightWheel  = null;
-    public DcMotor leftWheel   = null;
+   // public DcMotor rightWheel  = null;
+   // public DcMotor leftWheel   = null;
     //Servos of the claw
-    public Servo  leftClaw     = null;
-    public Servo  rightClaw    = null;
+   // public Servo  leftClaw     = null;
+   // public Servo  rightClaw    = null;
     //servos that twist the claw
-    public Servo verticalServo    = null;
-    public Servo horizontalServo = null;
-    //Servos that move the wheels grabbing stones
-    public Servo rightWheelServo = null;
-    public Servo leftWheelServo = null;
+//    public Servo verticalServo   = null;
+//    public Servo horizontalServo = null;
+//    //Servos that move the wheels grabbing stones
+//    public Servo rightWheelServo = null;
+//    public Servo leftWheelServo  = null;
 
-    public static final double MID_SERVO       =  0.5 ;
+    public static final double MID_SERVO       =  0;
     //public static final double ARM_UP_POWER    =  0.45 ;
     //public static final double ARM_DOWN_POWER  = -0.45 ;
 
@@ -94,22 +94,22 @@ public class HardwareRobot
         rightFront = hwMap.get(DcMotor.class, "right_front");
         leftBack   = hwMap.get(DcMotor.class, "left_back");
         rightBack  = hwMap.get(DcMotor.class, "right_back");
-        rightWheel = hwMap.get(DcMotor.class, "right_wheel");
-        leftWheel  = hwMap.get(DcMotor.class, "left_wheel");
+//        rightWheel = hwMap.get(DcMotor.class, "right_wheel");
+//        leftWheel  = hwMap.get(DcMotor.class, "left_wheel");
         leftFront.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightFront.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
-        rightWheel.setDirection(DcMotor.Direction.REVERSE);
-        leftWheel.setDirection(DcMotor.Direction.FORWARD);
+//        rightWheel.setDirection(DcMotor.Direction.REVERSE);
+//        leftWheel.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to zero power
         leftFront.setPower(0);
         rightFront.setPower(0);
         leftBack.setPower(0);
         rightBack.setPower(0);
-        rightWheel.setPower(0);
-        leftWheel.setPower(0);
+//        rightWheel.setPower(0);
+//        leftWheel.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -117,22 +117,22 @@ public class HardwareRobot
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rightWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        leftWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize ALL installed servos.
-        leftClaw        = hwMap.get(Servo.class, "left_hand");
-        rightClaw       = hwMap.get(Servo.class, "right_hand");
-        verticalServo   = hwMap.get(Servo.class, "vertical_servo");
-        horizontalServo = hwMap.get(Servo.class, "horizontal_servo");
-        rightWheelServo = hwMap.get(Servo.class, "right_wheel_servo");
-        leftWheelServo  = hwMap.get(Servo.class, "left_wheel_servo");
-        leftClaw.setPosition(MID_SERVO);
-        rightClaw.setPosition(MID_SERVO);
-        verticalServo.setPosition(MID_SERVO);
-        horizontalServo.setPosition(MID_SERVO);
-        leftWheelServo.setPosition(MID_SERVO);
-        rightWheelServo.setPosition(MID_SERVO);
+//        leftClaw        = hwMap.get(Servo.class, "left_hand");
+//        rightClaw       = hwMap.get(Servo.class, "right_hand");
+//        verticalServo   = hwMap.get(Servo.class, "vertical_servo");
+//        horizontalServo = hwMap.get(Servo.class, "horizontal_servo");
+//        rightWheelServo = hwMap.get(Servo.class, "right_wheel_servo");
+//        leftWheelServo  = hwMap.get(Servo.class, "left_wheel_servo");
+//        leftClaw.setPosition(MID_SERVO);
+//        rightClaw.setPosition(MID_SERVO);
+//        verticalServo.setPosition(MID_SERVO);
+//        horizontalServo.setPosition(MID_SERVO);
+//        leftWheelServo.setPosition(MID_SERVO);
+//        rightWheelServo.setPosition(MID_SERVO);
     }
  }
 

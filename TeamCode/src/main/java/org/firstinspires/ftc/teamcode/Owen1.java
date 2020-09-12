@@ -42,7 +42,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * Demonstrates empty OpMode
  */
 @TeleOp(name = "Concept: NullOp", group = "Concept")
-//@Disabled
+@Disabled
 public class Owen1 extends OpMode {
 
   private ElapsedTime runtime = new ElapsedTime();

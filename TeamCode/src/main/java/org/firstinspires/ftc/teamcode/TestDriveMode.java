@@ -61,7 +61,7 @@ public class TestDriveMode extends OpMode
     private DcMotor rightDrive = null; //define rightDrive
 
     Servo armServo; //define armServo
-    static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
+    static final double INCREMENT   = 0.003;     // amount to slew servo each CYCLE_MS cycle
     static final int    CYCLE_MS    =   50;     // period of each cycle
     static final double MAX_POS     =  1.0;     // Maximum rotational position
     static final double MIN_POS     =  0.0;     // Minimum rotational position
@@ -87,7 +87,7 @@ public class TestDriveMode extends OpMode
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
         armServo.setPosition(position);
 
         // Tell the driver that initialization is complete.
@@ -125,37 +125,47 @@ public class TestDriveMode extends OpMode
 
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
-        double drive = gamepad1.right_stick_x;
-        double turn  =  -gamepad1.right_stick_y;
+
         //position = (gamepad1.left_stick_x +1)/2; //sets servo position equal to the value of the joystick
 
 
 
-        while(gamepad1.left_stick_x != 0){
+       // while(gamepad1.left_stick_x != 0){
 
-            if (gamepad1.left_stick_x > 0){
-                position += INCREMENT;
+            if (gamepad1.dpad_right){   //rotates the servo right
+                position += INCREMENT; //increases position
+                if (position >= MAX_POS ) {
+                    position = MAX_POS;
+                }
+                armServo.setPosition(position);
 
-            } else if (gamepad1.left_stick_x < 0){
+            }
+
+            if (gamepad1.dpad_left) {
                 position -= INCREMENT;
+                if (position <= MIN_POS) {
+                    position = MIN_POS;
+                }
+                armServo.setPosition(position);
             }
 
 
 
-            // Display the current value
+
+                // Display the current value
             telemetry.addData("Servo Position", "%5.2f", position);
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
 
             // Set the servo to the new position and pause;
-            armServo.setPosition(position);
-           // sleep(CYCLE_MS);
-        }
+           // armServo.setPosition(position);
 
 
+        double drive = -gamepad1.right_stick_y;
+        double turn  =  gamepad1.left_stick_x;
 
-        leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+        leftPower    = Range.clip(drive + turn, -0.5, 0.5) ;
+        rightPower   = Range.clip(drive - turn, -0.5, 0.5) ;
 
 
 

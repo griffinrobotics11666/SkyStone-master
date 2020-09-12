@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -54,10 +55,20 @@ import com.qualcomm.robotcore.util.Range;
 //@Disabled
 public class TestDriveMode extends OpMode
 {
-    // Declare OpMode members.
+
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    private DcMotor leftDrive = null; //define leftDrive
+    private DcMotor rightDrive = null; //define rightDrive
+
+    Servo armServo; //define armServo
+    static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
+    static final int    CYCLE_MS    =   50;     // period of each cycle
+    static final double MAX_POS     =  1.0;     // Maximum rotational position
+    static final double MIN_POS     =  0.0;     // Minimum rotational position
+
+
+    double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -71,14 +82,18 @@ public class TestDriveMode extends OpMode
         // step (using the FTC Robot Controller app on the phone).
         leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        armServo = hardwareMap.get(Servo.class, "arm_servo");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        armServo.setPosition(position);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+
+
     }
 
     /*
@@ -112,8 +127,38 @@ public class TestDriveMode extends OpMode
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive = gamepad1.right_stick_x;
         double turn  =  -gamepad1.right_stick_y;
+        //position = (gamepad1.left_stick_x +1)/2; //sets servo position equal to the value of the joystick
+
+
+
+        while(gamepad1.left_stick_x != 0){
+
+            if (gamepad1.left_stick_x > 0){
+                position += INCREMENT;
+
+            } else if (gamepad1.left_stick_x < 0){
+                position -= INCREMENT;
+            }
+
+
+
+            // Display the current value
+            telemetry.addData("Servo Position", "%5.2f", position);
+            telemetry.addData(">", "Press Stop to end test." );
+            telemetry.update();
+
+            // Set the servo to the new position and pause;
+            armServo.setPosition(position);
+           // sleep(CYCLE_MS);
+        }
+
+
+
         leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
         rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+
+
+
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
@@ -124,9 +169,12 @@ public class TestDriveMode extends OpMode
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
 
+        //armServo.setPosition(position); //used if servo position is equal to value of joystick
+
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addData("Servo Position: ", position);
     }
 
     /*

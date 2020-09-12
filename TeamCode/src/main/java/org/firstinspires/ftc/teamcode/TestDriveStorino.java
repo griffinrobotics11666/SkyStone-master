@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
-//Disabled
+@Disabled
 public class TestDriveStorino extends OpMode
 {
     // Declare OpMode members.

@@ -184,10 +184,14 @@ public class TestDriveMode extends OpMode
         while(debug) {
             if(gamepad1.b) {
                 leftServoPosition += INCREMENT;
+                if(leftServoPosition >= MAX_POS) {
+                    leftServoPosition = MAX_POS;
+                }
                 leftArmServo.setPosition(leftServoPosition);
                 leftArmServo.getPosition();
-                gamepad1.b = false;
+                //gamepad1.b = false;
             }
+            /*
             if(gamepad1.a) {
                 leftServoPosition -= INCREMENT;
                 leftArmServo.setPosition(leftServoPosition);
@@ -206,6 +210,8 @@ public class TestDriveMode extends OpMode
                 rightArmServo.getPosition();
                 gamepad1.x = false;
             }
+            */
+
 
             if(gamepad1.dpad_up) {
                 debug = false;

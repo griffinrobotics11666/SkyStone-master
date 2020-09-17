@@ -70,7 +70,7 @@ public class TestDriveMode extends OpMode
     double  rightServoPosition = (MAX_POS - MIN_POS) / 2; // Start at halfway position
     double  leftServoPosition = (MAX_POS - MIN_POS) / 2; // Start at halfway position
 
-
+    boolean debug = false;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -176,6 +176,43 @@ public class TestDriveMode extends OpMode
         telemetry.addData("Left servo Position", "%5.2f", leftServoPosition);
         telemetry.addData("Right servo Position", "%5.2f", rightServoPosition);
         telemetry.update();
+
+        if(gamepad1.dpad_down) {
+            debug = true;
+        }
+
+        while(debug) {
+            if(gamepad1.b) {
+                leftServoPosition += INCREMENT;
+                leftArmServo.setPosition(leftServoPosition);
+                leftArmServo.getPosition();
+                gamepad1.b = false;
+            }
+            if(gamepad1.a) {
+                leftServoPosition -= INCREMENT;
+                leftArmServo.setPosition(leftServoPosition);
+                leftArmServo.getPosition();
+                gamepad1.a = false;
+            }
+            if(gamepad1.y) {
+                rightServoPosition += INCREMENT;
+                rightArmServo.setPosition(rightServoPosition);
+                rightArmServo.getPosition();
+                gamepad1.y = false;
+            }
+            if(gamepad1.x) {
+                rightServoPosition -= INCREMENT;
+                rightArmServo.setPosition(rightServoPosition);
+                rightArmServo.getPosition();
+                gamepad1.x = false;
+            }
+
+            if(gamepad1.dpad_up) {
+                debug = false;
+            }
+
+        }
+
     }
 
     /*

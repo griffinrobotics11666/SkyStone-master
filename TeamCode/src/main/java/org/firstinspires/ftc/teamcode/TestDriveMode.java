@@ -60,14 +60,16 @@ public class TestDriveMode extends OpMode
     private DcMotor leftDrive = null; //define leftDrive
     private DcMotor rightDrive = null; //define rightDrive
 
-    Servo armServo; //define armServo
+    Servo rightArmServo; //define armServo
+    Servo leftArmServo;
     static final double INCREMENT   = 0.003;     // amount to slew servo each CYCLE_MS cycle
-    static final int    CYCLE_MS    =   50;     // period of each cycle
     static final double MAX_POS     =  1.0;     // Maximum rotational position
     static final double MIN_POS     =  0.0;     // Minimum rotational position
 
 
-    double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
+    double  rightServoPosition = (MAX_POS - MIN_POS) / 2; // Start at halfway position
+    double  leftServoPosition = (MAX_POS - MIN_POS) / 2; // Start at halfway position
+
 
 
     /*
@@ -82,13 +84,15 @@ public class TestDriveMode extends OpMode
         // step (using the FTC Robot Controller app on the phone).
         leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        armServo = hardwareMap.get(Servo.class, "arm_servo");
+        rightArmServo = hardwareMap.get(Servo.class, "right_arm_servo");
+        leftArmServo = hardwareMap.get(Servo.class, "left_arm_servo");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        armServo.setPosition(position);
+        rightArmServo.setPosition(rightServoPosition);
+        leftArmServo.setPosition(leftServoPosition);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -120,71 +124,58 @@ public class TestDriveMode extends OpMode
         double leftPower;
         double rightPower;
 
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
-
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
-
-        //position = (gamepad1.left_stick_x +1)/2; //sets servo position equal to the value of the joystick
 
 
 
-       // while(gamepad1.left_stick_x != 0){
+
 
             if (gamepad1.dpad_right){   //rotates the servo right
-                position += INCREMENT; //increases position
-                if (position >= MAX_POS ) {
-                    position = MAX_POS;
+                rightServoPosition += INCREMENT; //increases position
+                leftServoPosition -= INCREMENT;
+                if (rightServoPosition >= MAX_POS || leftServoPosition >= MAX_POS ) {
+                    rightServoPosition = MAX_POS;
+                    leftServoPosition = MAX_POS;
                 }
-                armServo.setPosition(position);
+                rightArmServo.setPosition(rightServoPosition);
+                leftArmServo.setPosition(leftServoPosition);
+
 
             }
 
             if (gamepad1.dpad_left) {
-                position -= INCREMENT;
-                if (position <= MIN_POS) {
-                    position = MIN_POS;
+                rightServoPosition -= INCREMENT; //increases position
+                leftServoPosition += INCREMENT;
+                if (rightServoPosition <= MIN_POS || leftServoPosition <= MIN_POS) {
+                    rightServoPosition = MIN_POS;
+                    leftServoPosition = MIN_POS;
                 }
-                armServo.setPosition(position);
+                rightArmServo.setPosition(rightServoPosition);
+                leftArmServo.setPosition(leftServoPosition);
+
             }
 
 
 
 
-                // Display the current value
-            telemetry.addData("Servo Position", "%5.2f", position);
-            telemetry.addData(">", "Press Stop to end test." );
-            telemetry.update();
-
-            // Set the servo to the new position and pause;
-           // armServo.setPosition(position);
 
 
-        double drive = -gamepad1.right_stick_y;
-        double turn  =  gamepad1.left_stick_x;
+        double turn = -gamepad1.right_stick_x;
+        double drive  =  gamepad1.left_stick_y;
 
         leftPower    = Range.clip(drive + turn, -0.5, 0.5) ;
         rightPower   = Range.clip(drive - turn, -0.5, 0.5) ;
 
 
-
-
-        // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
-        // rightPower = -gamepad1.right_stick_y ;
-
         // Send calculated power to wheels
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
 
-        //armServo.setPosition(position); //used if servo position is equal to value of joystick
-
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("Servo Position: ", position);
+        telemetry.addData("Left servo Position", "%5.2f", leftServoPosition);
+        telemetry.addData("Right servo Position", "%5.2f", rightServoPosition);
+        telemetry.update();
     }
 
     /*

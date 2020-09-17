@@ -124,13 +124,10 @@ public class TestDriveMode extends OpMode
         double leftPower;
         double rightPower;
 
+        if(!debug) {    //runs until debug is true
 
-
-
-
-
-            if (gamepad1.dpad_right){   //rotates the servo right
-                rightServoPosition += INCREMENT; //increases position
+            if (gamepad1.dpad_right){   //opens the servo arm
+                rightServoPosition += INCREMENT;
                 leftServoPosition -= INCREMENT;
                 if (rightServoPosition >= MAX_POS || leftServoPosition >= MAX_POS ) {
                     rightServoPosition = MAX_POS;
@@ -138,12 +135,10 @@ public class TestDriveMode extends OpMode
                 }
                 rightArmServo.setPosition(rightServoPosition);
                 leftArmServo.setPosition(leftServoPosition);
-
-
             }
 
-            if (gamepad1.dpad_left) {
-                rightServoPosition -= INCREMENT; //increases position
+            if (gamepad1.dpad_left) {   //closes the servo arm
+                rightServoPosition -= INCREMENT;
                 leftServoPosition += INCREMENT;
                 if (rightServoPosition <= MIN_POS || leftServoPosition <= MIN_POS) {
                     rightServoPosition = MIN_POS;
@@ -151,72 +146,74 @@ public class TestDriveMode extends OpMode
                 }
                 rightArmServo.setPosition(rightServoPosition);
                 leftArmServo.setPosition(leftServoPosition);
+            }
 
+            if(gamepad1.dpad_up) {  //will run the debug statement until false
+                debug = true;
             }
 
 
+            double turn = -gamepad1.right_stick_x;
+            double drive  =  gamepad1.left_stick_y;
+
+            //calculates power
+            leftPower    = Range.clip(drive + turn, -0.5, 0.5) ;
+            rightPower   = Range.clip(drive - turn, -0.5, 0.5) ;
+
+
+            // Send calculated power to wheels
+            leftDrive.setPower(leftPower);
+            rightDrive.setPower(rightPower);
+
+            // Show the elapsed game time and wheel power.
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Left servo Position", "%5.2f", leftServoPosition);
+            telemetry.addData("Right servo Position", "%5.2f", rightServoPosition);
+            telemetry.update();
 
 
 
+        } else {    //runs if debug = true
 
-        double turn = -gamepad1.right_stick_x;
-        double drive  =  gamepad1.left_stick_y;
-
-        leftPower    = Range.clip(drive + turn, -0.5, 0.5) ;
-        rightPower   = Range.clip(drive - turn, -0.5, 0.5) ;
-
-
-        // Send calculated power to wheels
-        leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower);
-
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("Left servo Position", "%5.2f", leftServoPosition);
-        telemetry.addData("Right servo Position", "%5.2f", rightServoPosition);
-        telemetry.update();
-
-        if(gamepad1.dpad_down) {
-            debug = true;
-        }
-
-        while(debug) {
-            if(gamepad1.b) {
-                leftServoPosition += INCREMENT;
+            if(gamepad1.b) {    //increases left servo slightly
+                leftServoPosition += INCREMENT/3;
                 if(leftServoPosition >= MAX_POS) {
                     leftServoPosition = MAX_POS;
                 }
                 leftArmServo.setPosition(leftServoPosition);
-                leftArmServo.getPosition();
-                //gamepad1.b = false;
             }
-            /*
-            if(gamepad1.a) {
-                leftServoPosition -= INCREMENT;
+
+            if(gamepad1.a) {    //decreases left servo slightly
+                leftServoPosition -= INCREMENT/3;
+                if(leftServoPosition >= MAX_POS) {
+                    leftServoPosition = MAX_POS;
+                }
                 leftArmServo.setPosition(leftServoPosition);
-                leftArmServo.getPosition();
-                gamepad1.a = false;
             }
-            if(gamepad1.y) {
-                rightServoPosition += INCREMENT;
+            if(gamepad1.y) {    //increases right servo slightly
+                rightServoPosition += INCREMENT/3;
+                if(rightServoPosition >= MAX_POS) {
+                    rightServoPosition = MAX_POS;
+                }
                 rightArmServo.setPosition(rightServoPosition);
-                rightArmServo.getPosition();
-                gamepad1.y = false;
             }
-            if(gamepad1.x) {
-                rightServoPosition -= INCREMENT;
+            if(gamepad1.x) {    //decreases right servo slightly
+                rightServoPosition -= INCREMENT/3;
+                if(rightServoPosition >= MAX_POS) {
+                    rightServoPosition = MAX_POS;
+                }
                 rightArmServo.setPosition(rightServoPosition);
-                rightArmServo.getPosition();
-                gamepad1.x = false;
             }
-            */
 
 
-            if(gamepad1.dpad_up) {
+            if(gamepad1.dpad_down) {    //will exit out of loop if down is pressed
                 debug = false;
             }
 
+            //adds telemetry data for servos to phone
+            telemetry.addData("Left servo Position", "%5.2f", leftServoPosition);
+            telemetry.addData("Right servo Position", "%5.2f", rightServoPosition);
         }
 
     }

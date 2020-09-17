@@ -177,7 +177,7 @@ public class TestDriveMode extends OpMode
         telemetry.addData("Right servo Position", "%5.2f", rightServoPosition);
         telemetry.update();
 
-        if(gamepad1.a) {
+        if(gamepad1.dpad_down) {
             debug = true;
         }
 
@@ -205,6 +205,10 @@ public class TestDriveMode extends OpMode
                 rightArmServo.setPosition(rightServoPosition);
                 rightArmServo.getPosition();
                 gamepad1.x = false;
+            }
+
+            if(gamepad1.dpad_up) {
+                debug = false;
             }
 
         }

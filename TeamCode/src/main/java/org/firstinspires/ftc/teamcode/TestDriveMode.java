@@ -57,12 +57,14 @@ public class TestDriveMode extends OpMode
 {
 
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null; //define leftDrive
-    private DcMotor rightDrive = null; //define rightDrive
+    private DcMotor rearLeftDrive = null; //define leftDrive
+    private DcMotor rearRightDrive = null; //define rightDrive
+    private DcMotor frontRightDrive = null;
+    private DcMotor frontLeftDrive = null;
 
     Servo rightArmServo; //define armServo
     Servo leftArmServo;
-    static final double INCREMENT   = 0.003;     // amount to slew servo each CYCLE_MS cycle
+    static final double INCREMENT   = 0.003;     // amount to increase servo
     static final double MAX_POS     =  1.0;     // Maximum rotational position
     static final double MIN_POS     =  0.0;     // Minimum rotational position
 
@@ -82,15 +84,21 @@ public class TestDriveMode extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        rearLeftDrive  = hardwareMap.get(DcMotor.class, "rear_left_drive");
+        rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
+        frontLeftDrive  = hardwareMap.get(DcMotor.class, "front_left_drive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+
         rightArmServo = hardwareMap.get(Servo.class, "right_arm_servo");
         leftArmServo = hardwareMap.get(Servo.class, "left_arm_servo");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        rearLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        rearRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+
         rightArmServo.setPosition(rightServoPosition);
         leftArmServo.setPosition(leftServoPosition);
 
@@ -121,8 +129,10 @@ public class TestDriveMode extends OpMode
     @Override
     public void loop() {
         // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
+        double rearLeftPower;
+        double rearRightPower;
+        double frontLeftPower;
+        double frontRightPower;
 
         if(!debug) {    //runs until debug is true
 
@@ -152,22 +162,44 @@ public class TestDriveMode extends OpMode
                 debug = true;
             }
 
-
-            double turn = -gamepad1.right_stick_x;
+            //left stick
             double drive  =  gamepad1.left_stick_y;
+            double strafe = -gamepad1.left_stick_x;
+            //right stick
+            double turn = -gamepad1.right_stick_x;
 
             //calculates power
-            leftPower    = Range.clip(drive + turn, -0.5, 0.5) ;
-            rightPower   = Range.clip(drive - turn, -0.5, 0.5) ;
+            rearLeftPower    = Range.clip(drive + strafe, -0.5, 0.5) ;
+            rearRightPower   = Range.clip(drive - strafe, -0.5, 0.5) ;
+
+            frontLeftPower = Range.clip(drive + strafe, -0.5, 0.5) ;
+            frontRightPower = Range.clip(drive - strafe, -0.5, 0.5) ;
+
+            if (turn != 0){
+                rearLeftPower    = Range.clip(turn, -0.5, 0.5) ;
+                rearRightPower   = Range.clip(turn, -0.5, 0.5) ;
+
+                frontLeftPower = Range.clip(-turn, -0.5, 0.5) ;
+                frontRightPower = Range.clip(-turn, -0.5, 0.5) ;
+
+                rearLeftDrive.setPower(rearLeftPower);
+                rearRightDrive.setPower(rearRightPower);
+                frontLeftDrive.setPower(frontLeftPower);
+                frontRightDrive.setPower(frontRightPower);
+            }
 
 
-            // Send calculated power to wheels
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
+
+
+            // Send calculated power to rear wheels
+            rearLeftDrive.setPower(rearLeftPower);
+            rearRightDrive.setPower(rearRightPower);
+            frontLeftDrive.setPower(frontLeftPower);
+            frontRightDrive.setPower(frontRightPower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", rearLeftPower, rearRightPower);
             telemetry.addData("Left servo Position", "%5.2f", leftServoPosition);
             telemetry.addData("Right servo Position", "%5.2f", rightServoPosition);
             telemetry.update();

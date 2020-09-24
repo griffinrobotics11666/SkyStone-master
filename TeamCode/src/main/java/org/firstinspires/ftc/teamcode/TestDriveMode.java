@@ -169,27 +169,11 @@ public class TestDriveMode extends OpMode
             double turn = -gamepad1.right_stick_x;
 
             //calculates power
-            rearLeftPower    = Range.clip(drive + strafe, -0.5, 0.5) ;
-            rearRightPower   = Range.clip(drive - strafe, -0.5, 0.5) ;
+            rearLeftPower    = Range.clip(drive + strafe - turn, -0.5, 0.5) ;
+            rearRightPower   = Range.clip(drive - strafe + turn, -0.5, 0.5) ;
 
-            frontLeftPower = Range.clip(drive + strafe, -0.5, 0.5) ;
-            frontRightPower = Range.clip(drive - strafe, -0.5, 0.5) ;
-
-            if (turn != 0){
-                rearLeftPower    = Range.clip(turn, -0.5, 0.5) ;
-                rearRightPower   = Range.clip(turn, -0.5, 0.5) ;
-
-                frontLeftPower = Range.clip(-turn, -0.5, 0.5) ;
-                frontRightPower = Range.clip(-turn, -0.5, 0.5) ;
-
-                rearLeftDrive.setPower(rearLeftPower);
-                rearRightDrive.setPower(rearRightPower);
-                frontLeftDrive.setPower(frontLeftPower);
-                frontRightDrive.setPower(frontRightPower);
-            }
-
-
-
+            frontLeftPower = Range.clip(drive + strafe + turn, -0.5, 0.5) ;
+            frontRightPower = Range.clip(drive - strafe - turn, -0.5, 0.5) ;
 
             // Send calculated power to rear wheels
             rearLeftDrive.setPower(rearLeftPower);

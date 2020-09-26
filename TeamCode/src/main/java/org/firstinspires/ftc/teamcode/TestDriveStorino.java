@@ -32,10 +32,19 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import android.view.View;
+import android.app.Activity;
+import android.graphics.Color;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.Locale;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -53,209 +62,72 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
 @Disabled
-public class TestDriveStorino extends OpMode
-{
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-
-    Servo rightArmServo; //define armServo
-    Servo leftArmServo;
-    static final double INCREMENT   = 0.003;     // amount to slew servo each CYCLE_MS cycle
-    static final double MAX_POS     =  1.0;     // Maximum rotational position
-    static final double MIN_POS     =  0.0;     // Minimum rotational position
+public class TestDriveStorino extends OpMode {
 
 
-    double  rightServoPosition = (MAX_POS - MIN_POS) / 2; // Start at halfway position
-    double  leftServoPosition = (MAX_POS - MIN_POS) / 2; // Start at halfway position
+    ColorSensor sensorColor;
+    DistanceSensor sensorDistance;
 
 
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
-    @Override
     public void init() {
-        telemetry.addData("Status", "Initialized");
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        rightArmServo = hardwareMap.get(Servo.class, "right_arm_servo");
-        leftArmServo = hardwareMap.get(Servo.class, "left_arm_servo");
+        // get a reference to the color sensor.
+        sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightArmServo.setPosition(rightServoPosition);
-        leftArmServo.setPosition(leftServoPosition);
+        // get a reference to the distance sensor that shares the same name.
+        sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
 
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
+        // convert the RGB values to HSV values.
+        // multiply by the SCALE_FACTOR.
+        // then cast it back to int (SCALE_FACTOR is a double)
 
+
+        // send the info back to driver station using telemetry function.
+        telemetry.addData("Distance (cm)",
+                String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)));
+        telemetry.addData("Alpha", sensorColor.alpha());
+        telemetry.addData("Red  ", sensorColor.red());
+        telemetry.addData("Green", sensorColor.green());
+        telemetry.addData("Blue ", sensorColor.blue());
 
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
     public void init_loop() {
-    }
 
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
+
+    }
     public void start() {
-        runtime.reset();
-    }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
+
+    }
     @Override
     public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
+        telemetry.addData("Distance (cm)",
+                String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)));
+        telemetry.addData("Alpha", sensorColor.alpha());
+        telemetry.addData("Red  ", sensorColor.red());
+        telemetry.addData("Green", sensorColor.green());
+        telemetry.addData("Blue ", sensorColor.blue());
 
-
-
-
-
-
-        if (gamepad1.dpad_right){   //rotates the servo right
-            rightServoPosition += INCREMENT; //increases position
-            leftServoPosition -= INCREMENT;
-            if (rightServoPosition >= MAX_POS || leftServoPosition >= MAX_POS ) {
-                rightServoPosition = MAX_POS;
-                leftServoPosition = MAX_POS;
-            }
-            rightArmServo.setPosition(rightServoPosition);
-            leftArmServo.setPosition(leftServoPosition);
-
-
-        }
-
-        if (gamepad1.dpad_left) {
-            rightServoPosition -= INCREMENT; //increases position
-            leftServoPosition += INCREMENT;
-            if (rightServoPosition <= MIN_POS || leftServoPosition <= MIN_POS) {
-                rightServoPosition = MIN_POS;
-                leftServoPosition = MIN_POS;
-            }
-            rightArmServo.setPosition(rightServoPosition);
-            leftArmServo.setPosition(leftServoPosition);
-
-        }
-
-
-
-
-
-
-        double turn = -gamepad1.right_stick_x;
-        double drive  =  gamepad1.left_stick_y;
-
-        leftPower    = Range.clip(drive + turn, -0.5, 0.5) ;
-        rightPower   = Range.clip(drive - turn, -0.5, 0.5) ;
-
-
-        // Send calculated power to wheels
-        leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower);
-
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("Left servo Position", "%5.2f", leftServoPosition);
-        telemetry.addData("Right servo Position", "%5.2f", rightServoPosition);
-        telemetry.update();
     }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
-    @Override
-    public void init() {
-        telemetry.addData("Status", "Initialized");
-
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
-
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
-        runtime.reset();
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
-
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
-
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
-        double drive = -gamepad1.left_stick_y;
-        double turn  =  gamepad1.right_stick_x;
-        leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-
-        // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
-        // rightPower = -gamepad1.right_stick_y ;
-
-        // Send calculated power to wheels
-        leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower);
-
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-    }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
     public void stop() {
+
+
+
     }
 
-}
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+

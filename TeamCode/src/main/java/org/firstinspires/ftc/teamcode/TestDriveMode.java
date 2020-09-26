@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -87,7 +88,7 @@ public class TestDriveMode extends OpMode
         rearLeftDrive  = hardwareMap.get(DcMotor.class, "rear_left_drive");
         rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
         frontLeftDrive  = hardwareMap.get(DcMotor.class, "front_left_drive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
 
         rightArmServo = hardwareMap.get(Servo.class, "right_arm_servo");
         leftArmServo = hardwareMap.get(Servo.class, "left_arm_servo");
@@ -96,7 +97,7 @@ public class TestDriveMode extends OpMode
         // Reverse the motor that runs backwards when connected directly to the battery
         rearLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         rearRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         rightArmServo.setPosition(rightServoPosition);
@@ -169,11 +170,11 @@ public class TestDriveMode extends OpMode
             double turn = -gamepad1.right_stick_x;
 
             //calculates power
-            rearLeftPower    = Range.clip(drive + strafe - turn, -0.5, 0.5) ;
-            rearRightPower   = Range.clip(drive - strafe + turn, -0.5, 0.5) ;
+            rearLeftPower    = Range.clip(drive - strafe + turn, -1, 1) ;
+            rearRightPower   = Range.clip(drive + strafe - turn, -1, 1) ;
 
-            frontLeftPower = Range.clip(drive + strafe + turn, -0.5, 0.5) ;
-            frontRightPower = Range.clip(drive - strafe - turn, -0.5, 0.5) ;
+            frontLeftPower = Range.clip(drive + strafe + turn, -1, 1) ;
+            frontRightPower = Range.clip(drive - strafe - turn, -1, 1) ;
 
             // Send calculated power to rear wheels
             rearLeftDrive.setPower(rearLeftPower);
@@ -184,8 +185,8 @@ public class TestDriveMode extends OpMode
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", rearLeftPower, rearRightPower);
-            telemetry.addData("Left servo Position", "%5.2f", leftServoPosition);
-            telemetry.addData("Right servo Position", "%5.2f", rightServoPosition);
+            telemetry.addData("Left rear servo Position", "%5.2f", leftServoPosition);
+            telemetry.addData("Right rear servo Position", "%5.2f", rightServoPosition);
             telemetry.update();
 
 

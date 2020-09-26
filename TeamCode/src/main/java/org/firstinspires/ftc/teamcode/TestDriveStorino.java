@@ -84,7 +84,7 @@ public class TestDriveStorino extends OpMode {
 
 
         // send the info back to driver station using telemetry function.
-        telemetry.addData("Distance (cm)",
+        telemetry.addData("Distance (mm)",
                 String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.MM)));
         telemetry.addData("Alpha", sensorColor.alpha());
         telemetry.addData("Red  ", sensorColor.red());
@@ -103,7 +103,7 @@ public class TestDriveStorino extends OpMode {
     }
     @Override
     public void loop() {
-        telemetry.addData("Distance (cm)",
+        telemetry.addData("Distance (mm)",
                 String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.MM)));
         telemetry.addData("Alpha", sensorColor.alpha());
         telemetry.addData("Red  ", sensorColor.red());

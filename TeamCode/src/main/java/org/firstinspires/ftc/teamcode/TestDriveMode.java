@@ -32,11 +32,17 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.Locale;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -54,8 +60,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Test Drive Mode", group="Iterative Opmode")
 //@Disabled
-public class TestDriveMode extends OpMode
-{
+public class TestDriveMode extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor rearLeftDrive = null; //define leftDrive
@@ -65,13 +70,15 @@ public class TestDriveMode extends OpMode
 
     Servo rightArmServo; //define armServo
     Servo leftArmServo;
-    static final double INCREMENT   = 0.003;     // amount to increase servo
-    static final double MAX_POS     =  1.0;     // Maximum rotational position
-    static final double MIN_POS     =  0.0;     // Minimum rotational position
+    static final double INCREMENT = 0.003;     // amount to increase servo
+    static final double MAX_POS = 1.0;     // Maximum rotational position
+    static final double MIN_POS = 0.0;     // Minimum rotational position
 
+    ColorSensor sensorColor;
+    DistanceSensor sensorDistance;
 
-    double  rightServoPosition = (MAX_POS - MIN_POS) / 2; // Start at halfway position
-    double  leftServoPosition = (MAX_POS - MIN_POS) / 2; // Start at halfway position
+    double rightServoPosition = (MAX_POS - MIN_POS) / 2; // Start at halfway position
+    double leftServoPosition = (MAX_POS - MIN_POS) / 2; // Start at halfway position
 
     boolean debug = false;
 
@@ -85,9 +92,9 @@ public class TestDriveMode extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        rearLeftDrive  = hardwareMap.get(DcMotor.class, "rear_left_drive");
+        rearLeftDrive = hardwareMap.get(DcMotor.class, "rear_left_drive");
         rearRightDrive = hardwareMap.get(DcMotor.class, "rear_right_drive");
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "front_left_drive");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
 
         rightArmServo = hardwareMap.get(Servo.class, "right_arm_servo");
@@ -106,6 +113,24 @@ public class TestDriveMode extends OpMode
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
 
+        // get a reference to the color sensor.
+        sensorColor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
+
+        // get a reference to the distance sensor that shares the same name.
+        sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
+
+        // convert the RGB values to HSV values.
+        // multiply by the SCALE_FACTOR.
+        // then cast it back to int (SCALE_FACTOR is a double)
+
+
+        // send the info back to driver station using telemetry function.
+        telemetry.addData("Distance (mm)",
+                String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.MM)));
+        telemetry.addData("Alpha", sensorColor.alpha());
+        telemetry.addData("Red  ", sensorColor.red());
+        telemetry.addData("Green", sensorColor.green());
+        telemetry.addData("Blue ", sensorColor.blue());
 
     }
 
@@ -135,12 +160,12 @@ public class TestDriveMode extends OpMode
         double frontLeftPower;
         double frontRightPower;
 
-        if(!debug) {    //runs until debug is true
+        if (!debug) {    //runs until debug is true
 
-            if (gamepad1.dpad_right){   //opens the servo arm
+            if (gamepad1.dpad_right) {   //opens the servo arm
                 rightServoPosition += INCREMENT;
                 leftServoPosition -= INCREMENT;
-                if (rightServoPosition >= MAX_POS || leftServoPosition >= MAX_POS ) {
+                if (rightServoPosition >= MAX_POS || leftServoPosition >= MAX_POS) {
                     rightServoPosition = MAX_POS;
                     leftServoPosition = MAX_POS;
                 }
@@ -159,22 +184,22 @@ public class TestDriveMode extends OpMode
                 leftArmServo.setPosition(leftServoPosition);
             }
 
-            if(gamepad1.dpad_up) {  //will run the debug statement until false
+            if (gamepad1.dpad_up) {  //will run the debug statement until false
                 debug = true;
             }
 
             //left stick
-            double drive  =  gamepad1.left_stick_y;
+            double drive = gamepad1.left_stick_y;
             double strafe = -gamepad1.left_stick_x;
             //right stick
             double turn = -gamepad1.right_stick_x;
 
             //calculates power
-            rearLeftPower    = Range.clip(drive - strafe + turn, -1, 1) ;
-            rearRightPower   = Range.clip(drive + strafe - turn, -1, 1) ;
+            rearLeftPower = Range.clip(drive - strafe + turn, -1, 1);
+            rearRightPower = Range.clip(drive + strafe - turn, -1, 1);
 
-            frontLeftPower = Range.clip(drive + strafe + turn, -1, 1) ;
-            frontRightPower = Range.clip(drive - strafe - turn, -1, 1) ;
+            frontLeftPower = Range.clip(drive + strafe + turn, -1, 1);
+            frontRightPower = Range.clip(drive - strafe - turn, -1, 1);
 
             // Send calculated power to rear wheels
             rearLeftDrive.setPower(rearLeftPower);
@@ -190,56 +215,70 @@ public class TestDriveMode extends OpMode
             telemetry.update();
 
 
-
         } else {    //runs if debug = true
 
-            if(gamepad1.b) {    //increases left servo slightly
-                leftServoPosition += INCREMENT/3;
-                if(leftServoPosition >= MAX_POS) {
+            if (gamepad1.b) {    //increases left servo slightly
+                leftServoPosition += INCREMENT / 3;
+                if (leftServoPosition >= MAX_POS) {
                     leftServoPosition = MAX_POS;
                 }
                 leftArmServo.setPosition(leftServoPosition);
             }
 
-            if(gamepad1.a) {    //decreases left servo slightly
-                leftServoPosition -= INCREMENT/3;
-                if(leftServoPosition >= MAX_POS) {
+            if (gamepad1.a) {    //decreases left servo slightly
+                leftServoPosition -= INCREMENT / 3;
+                if (leftServoPosition >= MAX_POS) {
                     leftServoPosition = MAX_POS;
                 }
                 leftArmServo.setPosition(leftServoPosition);
             }
-            if(gamepad1.y) {    //increases right servo slightly
-                rightServoPosition += INCREMENT/3;
-                if(rightServoPosition >= MAX_POS) {
+            if (gamepad1.y) {    //increases right servo slightly
+                rightServoPosition += INCREMENT / 3;
+                if (rightServoPosition >= MAX_POS) {
                     rightServoPosition = MAX_POS;
                 }
                 rightArmServo.setPosition(rightServoPosition);
             }
-            if(gamepad1.x) {    //decreases right servo slightly
-                rightServoPosition -= INCREMENT/3;
-                if(rightServoPosition >= MAX_POS) {
+            if (gamepad1.x) {    //decreases right servo slightly
+                rightServoPosition -= INCREMENT / 3;
+                if (rightServoPosition >= MAX_POS) {
                     rightServoPosition = MAX_POS;
                 }
                 rightArmServo.setPosition(rightServoPosition);
             }
 
 
-            if(gamepad1.dpad_down) {    //will exit out of loop if down is pressed
+            if (gamepad1.dpad_down) {    //will exit out of loop if down is pressed
                 debug = false;
             }
 
             //adds telemetry data for servos to phone
             telemetry.addData("Left servo Position", "%5.2f", leftServoPosition);
             telemetry.addData("Right servo Position", "%5.2f", rightServoPosition);
+
+
+            telemetry.addData("Distance (mm)",
+                    String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.MM)));
+            telemetry.addData("Alpha", sensorColor.alpha());
+            telemetry.addData("Red  ", sensorColor.red());
+            telemetry.addData("Green", sensorColor.green());
+            telemetry.addData("Blue ", sensorColor.blue());
         }
+
+
+
 
     }
 
     /*
      * Code to run ONCE after the driver hits STOP
      */
-    @Override
-    public void stop() {
+
+
+
+        @Override
+        public void stop() {
+        }
+
     }
 
-}
